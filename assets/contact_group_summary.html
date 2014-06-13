@@ -1,0 +1,47 @@
+<html>
+	<head>
+
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+    
+			google.load('visualization', '1.0', {'packages':['corechart']});
+
+			google.setOnLoadCallback(drawCharts);
+
+			function drawCharts() {
+			
+				drawBarChart();
+			}
+			
+			function drawBarChart() {
+			
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Group');
+				data.addColumn('number', 'Amount');
+				data.addColumn({type: 'number', role: 'annotation'});
+				
+				var jsonData = JSON.parse(App.getSummaryByContactGroups());
+				
+				for(var i=0; i< jsonData.length; i++){
+					data.addRow([jsonData[i].group,jsonData[i].amount,jsonData[i].amount]);
+				}
+								
+				var options = {'title':'Summary by Group',
+								legend:{position:'bottom'},
+								vAxis:{title:'Group'}};
+
+				var chart = new google.visualization.BarChart(document.getElementById('bar_chart'));
+				chart.draw(data, options);
+			}
+			
+		</script>
+	
+	</head>
+
+	<body>
+	
+		<div id="bar_chart" style="width:100%; height:300"></div>
+
+	</body>
+	
+</html>

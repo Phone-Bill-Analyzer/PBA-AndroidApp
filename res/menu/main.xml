@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:icon="@drawable/help"
+		  android:id="@+id/Help"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/help">
+	</item>
+	
+	<item android:icon="@drawable/settings"
+        android:id="@+id/action_settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings"/>
+
+	<item android:icon="@drawable/ic_action_refresh"
+		  android:id="@+id/ReloadContacts"
+		  android:showAsAction="ifRoom|withText"
+		  android:title="@string/reload_contacts">
+	</item>
+	
+	<item android:icon="@drawable/about"
+		  android:id="@+id/About"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/about">
+	</item>
+	
+</menu>

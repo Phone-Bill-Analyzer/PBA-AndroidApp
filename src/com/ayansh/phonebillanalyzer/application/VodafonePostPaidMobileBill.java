@@ -167,7 +167,7 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 					}
 					
 				}
-				if(dateTime.length() == 17 && dateTime.charAt(8) == '-' && itemWords.length == 5){
+				else if(dateTime.length() == 17 && dateTime.charAt(8) == '-' && itemWords.length >= 4){
 					// These are roaming ones.
 					String dt = dateTime.substring(0, 8);
 					String tm = dateTime.substring(9, 17);

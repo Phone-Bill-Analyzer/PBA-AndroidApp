@@ -3,30 +3,40 @@ package com.ayansh.phonebillanalyzer.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.varunverma.CommandExecuter.CommandExecuter;
+import org.varunverma.CommandExecuter.Invoker;
+import org.varunverma.CommandExecuter.ProgressInfo;
+import org.varunverma.CommandExecuter.ResultObject;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.AirtelPostPaidMobileBill;
 import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
+import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class Main extends Activity implements OnItemClickListener {
+public class Main extends Activity implements OnItemClickListener, Invoker {
 	
 	private ListView listView;
 	private BillListAdapter adapter;
 	private List<PhoneBill> billList;
+	private ProgressDialog pd;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +111,11 @@ public class Main extends Activity implements OnItemClickListener {
 			break;
 			
 		case R.id.ReloadContacts:
-			PBAApplication.getInstance().reloadContactsInfo();
+
+			CommandExecuter ce = new CommandExecuter();
+			ReloadContactsInfoCommand command = new ReloadContactsInfoCommand(this);
+			pd = ProgressDialog.show(this, "Please wait", "Re-loading contacts information");
+			ce.execute(command);
 			break;
 		
 		}
@@ -142,6 +156,26 @@ public class Main extends Activity implements OnItemClickListener {
 			break;
 			
 		}
+	}
+
+	@Override
+	public void NotifyCommandExecuted(ResultObject result) {
+		
+		pd.dismiss();
+		
+		if(result.isCommandExecutionSuccess()){
+			Toast.makeText(this, "Contacts Reloaded successfuly", Toast.LENGTH_LONG).show();
+		}
+		else{
+			Toast.makeText(this, "Error occured while loading contacts info", Toast.LENGTH_LONG).show();
+			Log.e(PBAApplication.TAG, result.getErrorMessage(), result.getException());
+		}
+		
+	}
+
+	@Override
+	public void ProgressUpdate(ProgressInfo pi) {
+		// Nothing to do.
 	}
 
 }

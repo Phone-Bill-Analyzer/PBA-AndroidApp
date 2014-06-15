@@ -112,13 +112,24 @@ public abstract class PhoneBill {
 	
 	public String getBillDate(){
 		
+		if(billDate == null){
+			return "";
+		}
+		
 		String[] date = billDate.split("-");
 		return date[0];
 	}
 
 	public String getBillMonth(){
 		
+		if(billDate == null){
+			return "";
+		}
+		
 		String[] date = billDate.split("-");
+		if(date.length < 2){
+			return "null";
+		}
 		return date[1];
 	}
 	
@@ -240,9 +251,11 @@ public abstract class PhoneBill {
 		PBAApplicationDB appDB = PBAApplicationDB.getInstance();
 		
 		String query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
-				+ "cd.Amount as Amount from BillCallDetails as cd "
+				+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
 				+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
-				+ "where cd.Comments <> 'discounted calls' group by n order by Amount desc limit 5";
+				+ "where cd.BillNo = '" + billNo + "' "
+				//+ "and cd.Comments <> 'discounted calls' "
+				+ "group by n order by Amount desc limit 5";
 		
 		Cursor cursor = appDB.rawQuery(query);
 		
@@ -256,8 +269,11 @@ public abstract class PhoneBill {
 				
 				try {
 					
+					double amt = cursor.getDouble(1);
+					float amount = Math.round(amt * 100)/100;
+					
 					data.put("contact", cursor.getString(0));
-					data.put("amount", cursor.getLong(1));
+					data.put("amount", amount);
 					resultData.put(data);
 					
 				} catch (JSONException e) {
@@ -280,7 +296,8 @@ public abstract class PhoneBill {
 		
 		String query = "select case when cg.GroupName is null then 'Others' else cg.GroupName end as GroupN, "
 				+ "sum(cd.Amount) as Amount "
-				+ "from BillCallDetails as cd left outer join ContactGroups as cg on cd.PhoneNo = cg.PhoneNo group by GroupN";
+				+ "from BillCallDetails as cd left outer join ContactGroups as cg on cd.PhoneNo = cg.PhoneNo "
+				+ "where cd.BillNo = '" + billNo + "' group by GroupN";
 		
 		Cursor cursor = appDB.rawQuery(query);
 		
@@ -294,8 +311,10 @@ public abstract class PhoneBill {
 				
 				try{
 					
+					double amt = cursor.getDouble(1);
+					float amount = Math.round(amt * 100)/100;
 					data.put("group", cursor.getString(0));
-					data.put("amount", cursor.getFloat(1));
+					data.put("amount", amount);
 					
 					resultData.put(data);
 					

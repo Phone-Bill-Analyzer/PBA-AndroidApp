@@ -38,6 +38,7 @@ public class ReadPDFFileCommand extends Command {
 			break;
 		
 		case 1:
+			bill = new VodafonePostPaidMobileBill(fileName, fileUri);
 			break;
 			
 		}

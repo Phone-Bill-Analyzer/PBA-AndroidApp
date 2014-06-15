@@ -26,55 +26,51 @@ public class AirtelPostPaidMobileBill extends PhoneBill {
 	@Override
 	public void parseBillText() {
 		
-		int pageStartIndex = 0;
-		int pageEndIndex = fileText.indexOf("page 1 of");
-		
 		/*
-		 * Page 1
+		 * Page 1 and 2
 		 * Read Phone Number and Bill Number
 		 */
-		String page1 = fileText.substring(pageStartIndex, pageEndIndex);
 		
-		int begin = page1.indexOf("airtel number");
-		int end = begin + 30;
+		// Take 1st 100 lines
+		String[] lines = fileText.split("\n",100);
 		
-		String substring = page1.substring(begin, end);
-		
-		String[] lines = substring.split("\n");
-		String[] words = lines[0].split(" ");
-		phoneNo = words[2];
-		
-		begin = page1.indexOf("bill number", begin);
-		end = begin + 30;
-		
-		substring = page1.substring(begin, end);
-		
-		lines = substring.split("\n");
-		words = lines[0].split(" ");
-		billNo = words[2];
-		
-		/*
-		 * Page 2
-		 * Read Bill Date
-		 */
-		
-		pageStartIndex = pageEndIndex;
-		pageEndIndex = fileText.indexOf("page 2 of");
-		
-		String page2 = fileText.substring(pageStartIndex, pageEndIndex);
-		
-		begin = page2.indexOf("bill number");
-		end = page2.indexOf(billNo);
-		
-		substring = page2.substring(begin, end);
-		lines = substring.split("\n");
-		billDate = lines[1];
+		for(int i=0; i<100; i++){
+			
+			if(lines[i].contains("airtel number")){
+				
+				String[] words = lines[i].split(" ");
+				if(words.length == 3 && phoneNo == null){
+					phoneNo = words[2];
+				}
+				
+			}
+			
+			if(lines[i].contains("bill number")){
+				
+				String[] words = lines[i].split(" ");
+				if(words.length == 3 && billNo == null){
+					billNo = words[2];
+				}
+				
+			}
+			
+			if(lines[i].contains("your bill plan(as on")){
+				
+				String[] words = lines[i].split(" ");
+				if(words.length > 5 && billDate == null){
+					billDate = words[4];
+					setBillDate(billDate.substring(0, 11));
+				}
+				
+			}
+			
+		}
 		
 		/*
 		 * Itemized Bill
 		 */
 		
-		begin = fileText.indexOf("your itemised statement");
+		int begin = fileText.indexOf("your itemised statement");
 		String itemizedStatement = fileText.substring(begin);
 		
 		String[] billGroups = itemizedStatement.split("total");

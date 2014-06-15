@@ -205,6 +205,11 @@ public class PBAApplicationDB extends SQLiteOpenHelper{
 					bill = new AirtelPostPaidMobileBill(cursor.getString(cursor.getColumnIndex("BillNo")));
 					
 				}
+				else if(billType.contentEquals(VodafonePostPaidMobileBill.BillType)){
+					
+					bill = new VodafonePostPaidMobileBill(cursor.getString(cursor.getColumnIndex("BillNo")));
+					
+				}
 				
 				bill.setPhoneNumber(cursor.getString(cursor.getColumnIndex("PhoneNo")));
 				bill.setBillDate(cursor.getString(cursor.getColumnIndex("BillDate")));

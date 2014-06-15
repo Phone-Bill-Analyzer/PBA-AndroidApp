@@ -5,6 +5,11 @@ public class CallDetailItem {
 	private String callDate, callTime, phoneNumber, duration, comments;
 	private float cost;
 	
+	public CallDetailItem(){
+		callDate = callTime = phoneNumber = duration = comments = "";
+		cost = 0;
+	}
+	
 	public String getCallDate() {
 		return callDate;
 	}

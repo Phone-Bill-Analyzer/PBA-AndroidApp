@@ -14,6 +14,9 @@
 	<string name="upload">Upload</string>
 	<string name="select_file_name">Select a File</string>
 	<string name="pwd_for_file">Password (If file is protected)</string>
+	<string name="inc_disc_calls">Include discounted calls</string>
+	<string name="inc_disc_calls_summ">Include discounted calls in analytics</string>
+	<string name="download_db">Download DB</string>
 	
 	<string-array name="bill_types">
         <item>APPM : Airtel Post Paid Mobile</item>
@@ -21,6 +24,7 @@
     </string-array>
     
 	<string-array name="analysis_type">
+	    <item>Itemised Bill</item>
         <item>Top 5 callers by Name</item>
         <item>Call costs by Contact Group</item>
     </string-array>

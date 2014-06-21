@@ -1,5 +1,7 @@
 package com.ayansh.phonebillanalyzer.ui;
 
+import java.util.Iterator;
+
 import org.varunverma.CommandExecuter.CommandExecuter;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ProgressInfo;
@@ -18,15 +20,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
+import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.application.ReadPDFFileCommand;
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class NewBill extends Activity implements OnClickListener, Invoker {
 	
@@ -34,6 +37,7 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 	private Uri fileURI;
 	private ProgressDialog pd;
 	private Spinner billType;
+	private TextView helpText;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +45,15 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.new_bill);
-		
-		// Tracking.
-        EasyTracker.getInstance().activityStart(this);
-		
+
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
 			// Show Ad.
-			AdRequest adRequest = new AdRequest();
-			adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
-			adRequest.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5");
+			AdRequest adRequest = new AdRequest.Builder()
+			.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+			.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5").build();
+
 			AdView adView = (AdView) findViewById(R.id.adView);
 
 			// Start loading the ad in the background.
@@ -68,6 +70,26 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		
 		billType = (Spinner) findViewById(R.id.bill_type);
 		
+		helpText = (TextView) findViewById(R.id.help_text);
+		
+		showHelp();
+	}
+
+	private void showHelp() {
+		
+		String help = "Note : Internet connectivity is required to analyze the bill "
+				+ "because this app depends on Google Charts API"
+				+ "\n\n";
+		
+		if (!Constants.isPremiumVersion()) {
+		
+			help = help + "Note : You are using the free version of the app.\n"
+					+ "In this version, you can anlyze only 1 bill at a time.\n"
+					+ "Old bill will be deleted.";
+		}
+		
+		helpText.setText(help);
+		
 	}
 
 	@Override
@@ -80,8 +102,23 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 			break;
 			
 		case R.id.upload:
+			deleteOldBillDetails();
 			uploadFile();
 			break;
+			
+		}
+		
+	}
+
+	private void deleteOldBillDetails() {
+		
+		PBAApplication app = PBAApplication.getInstance();
+		
+		Iterator<PhoneBill> i = app.getPhoneBillList(false).iterator();
+		
+		while(i.hasNext()){
+			
+			app.deleteBill(i.next().getBillNo());
 			
 		}
 		

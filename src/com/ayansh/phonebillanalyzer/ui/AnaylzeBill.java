@@ -21,9 +21,8 @@ import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class AnaylzeBill extends Activity implements OnItemSelectedListener {
@@ -42,16 +41,14 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		
 		setTitle("Analyze Bill");
 		
-		// Tracking.
-        EasyTracker.getInstance().activityStart(this);
-		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
 			// Show Ad.
-			AdRequest adRequest = new AdRequest();
-			adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
-			adRequest.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5");
+			AdRequest adRequest = new AdRequest.Builder()
+					.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+					.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5").build();
+			
 			AdView adView = (AdView) findViewById(R.id.adView);
 
 			// Start loading the ad in the background.
@@ -114,11 +111,15 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		switch(pos){
 			
 		case 0:
+			getHTMLFromFile("all_contacts_table.html");
+			break;
+			
+		case 1:
 			
 			getHTMLFromFile("top_5_pie_chart.html");
 			break;
 			
-		case 1:
+		case 2:
 			getHTMLFromFile("contact_group_summary.html");
 			break;
 		
@@ -131,7 +132,7 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 		
-		getHTMLFromFile("top_5_pie_chart.html");
+		getHTMLFromFile("all_contacts_table.html");
 		showFromRawSource();
 	}
 	

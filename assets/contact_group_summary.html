@@ -23,7 +23,8 @@
 				var jsonData = JSON.parse(App.getSummaryByContactGroups());
 				
 				for(var i=0; i< jsonData.length; i++){
-					data.addRow([jsonData[i].group,jsonData[i].amount,jsonData[i].amount]);
+					var amt = Math.round(jsonData[i].amount * 100) / 100;
+					data.addRow([jsonData[i].group,amt,amt]);
 				}
 								
 				var options = {'title':'Summary by Group',

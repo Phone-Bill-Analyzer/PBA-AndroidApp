@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,9 +28,8 @@ import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class Main extends Activity implements OnItemClickListener, Invoker {
 	
@@ -48,22 +48,26 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		setTitle("Bill List");
 		
 		PBAApplication.getInstance().setContext(getApplicationContext());
-		
-		// Tracking.
-        EasyTracker.getInstance().activityStart(this);
+
+		// Google Analytics
+		PBAApplication.getInstance().getTracker();
 		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
 			// Show Ad.
-			AdRequest adRequest = new AdRequest();
-			adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
-			adRequest.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5");
+			AdRequest adRequest = new AdRequest.Builder()
+			.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+			.addTestDevice("9BAEE2C71E47F042ABCEDE3FCEF2E9D5").build();
+
 			AdView adView = (AdView) findViewById(R.id.adView);
 
 			// Start loading the ad in the background.
 			adView.loadAd(adRequest);
 		}
+		
+		// Initialize Preferences
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
 		billList = new ArrayList<PhoneBill>();
 		
@@ -73,7 +77,7 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		
 		listView = (ListView) findViewById(R.id.bill_list);
 		
-		adapter = new BillListAdapter(this, R.layout.billlistrow, R.id.bill_no, billList);
+		adapter = new BillListAdapter(this, R.layout.billlistrow, R.id.phone_no, billList);
 		
 		listView.setAdapter(adapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -86,6 +90,7 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		menu.findItem(R.id.DownloaDB).setVisible(false);
 		return true;
 	}
 	
@@ -94,8 +99,13 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		
 		switch (item.getItemId()){
 		
+		case R.id.settings:
+			Intent settings = new Intent(Main.this, SettingsActivity.class);
+			Main.this.startActivity(settings);
+			
+			break;
+			
 		case R.id.Help:
-			EasyTracker.getTracker().sendView("/Help");
 			Intent help = new Intent(Main.this, DisplayFile.class);
 			help.putExtra("File", "help.html");
 			help.putExtra("Title", "Help: ");
@@ -103,7 +113,6 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 			break;
 			
 		case R.id.About:
-			EasyTracker.getTracker().sendView("/About");
     		Intent info = new Intent(Main.this, DisplayFile.class);
 			info.putExtra("File", "about.html");
 			info.putExtra("Title", "About: ");
@@ -117,6 +126,10 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 			pd = ProgressDialog.show(this, "Please wait", "Re-loading contacts information");
 			ce.execute(command);
 			break;
+			
+		case R.id.DownloaDB:
+			PBAApplication.getInstance().downloaDBData();
+			break;
 		
 		}
 		
@@ -126,17 +139,23 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 		
-		if(pos == 0){
-						
-			// New Phone Bill
-			Intent newBill = new Intent(Main.this, NewBill.class);
-			Main.this.startActivityForResult(newBill, 100);
+		if (pos == 0) {
+
+			if (billList.size() >= 2 && !Constants.isPremiumVersion()) {
+
+				Intent buy = new Intent(Main.this, ActivatePremiumFeatures.class);
+				Main.this.startActivityForResult(buy, 900);
+				
+			} else {
+				// New Phone Bill
+				Intent newBill = new Intent(Main.this, NewBill.class);
+				Main.this.startActivityForResult(newBill, 100);
+			}
 			
-		}
-		else{
-			
+		} else {
+
 			Intent analyzeBill = new Intent(Main.this, AnaylzeBill.class);
-			analyzeBill.putExtra("Position", pos-1);
+			analyzeBill.putExtra("Position", pos - 1);
 			Main.this.startActivity(analyzeBill);
 		}
 
@@ -153,6 +172,23 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 			billList.add(0, new AirtelPostPaidMobileBill("DUMMY"));	// Dummy Entry
 			
 			adapter.notifyDataSetChanged();
+			break;
+			
+		case 900:
+			
+			if(resultCode == RESULT_OK){
+				
+				if (data.getBooleanExtra("RestartApp", false)) {
+					finish();
+				}
+			}
+			else{
+				
+				// New Phone Bill
+				Intent newBill = new Intent(Main.this, NewBill.class);
+				Main.this.startActivityForResult(newBill, 100);
+			}
+			
 			break;
 			
 		}

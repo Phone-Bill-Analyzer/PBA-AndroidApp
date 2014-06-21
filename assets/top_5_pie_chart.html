@@ -22,7 +22,8 @@
 				data.addColumn('number', 'Amount');
 				
 				for(var i=0; i< jsonData.length; i++){
-					data.addRow([jsonData[i].contact,jsonData[i].amount]);
+					var amt = Math.round(jsonData[i].amount * 100) / 100;
+					data.addRow([jsonData[i].contact,amt]);
 				}
 				
 				var options = {'title':'Cost Summarization',

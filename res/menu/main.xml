@@ -7,13 +7,13 @@
 	</item>
 	
 	<item android:icon="@drawable/settings"
-        android:id="@+id/action_settings"
+        android:id="@+id/settings"
         android:showAsAction="ifRoom"
         android:title="@string/action_settings"/>
 
 	<item android:icon="@drawable/ic_action_refresh"
 		  android:id="@+id/ReloadContacts"
-		  android:showAsAction="ifRoom|withText"
+		  android:showAsAction="withText"
 		  android:title="@string/reload_contacts">
 	</item>
 	
@@ -21,6 +21,12 @@
 		  android:id="@+id/About"
 		  android:showAsAction="ifRoom"
 		  android:title="@string/about">
+	</item>
+	
+	<item android:icon="@drawable/ic_action_download"
+		  android:id="@+id/DownloaDB"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/download_db">
 	</item>
 	
 </menu>

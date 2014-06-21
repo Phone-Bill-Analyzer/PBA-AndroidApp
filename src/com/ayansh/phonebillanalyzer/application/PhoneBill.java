@@ -96,6 +96,10 @@ public abstract class PhoneBill {
 		return toDate;
 	}
 	
+	public String getBillType(){
+		return billType;
+	}
+	
 	@SuppressLint("SimpleDateFormat")
 	public void setBillDate(String date){
 		
@@ -190,13 +194,7 @@ public abstract class PhoneBill {
 		
 		if(billExists){
 			
-			String query = "DELETE FROM BillMetaData WHERE BillNo = '" + billNo + "'";
-			queries.add(query);
-			
-			query = "DELETE FROM BillCallDetails WHERE BillNo = '" + billNo + "'";
-			queries.add(query);
-			
-			appDB.executeQueries(queries);
+			PBAApplication.getInstance().deleteBill(billNo);
 		}
 		
 		queries.clear();
@@ -250,12 +248,25 @@ public abstract class PhoneBill {
 		
 		PBAApplicationDB appDB = PBAApplicationDB.getInstance();
 		
-		String query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
-				+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
-				+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
-				+ "where cd.BillNo = '" + billNo + "' "
-				//+ "and cd.Comments <> 'discounted calls' "
-				+ "group by n order by Amount desc limit 5";
+		String query = "";
+		
+		if(PBAApplication.getInstance().includeDiscountedCalls()){
+			
+			query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
+					+ "where cd.BillNo = '" + billNo + "' "
+					+ "group by n order by Amount desc limit 5";
+		}
+		else{
+			
+			query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
+					+ "where cd.BillNo = '" + billNo + "' "
+					+ "and cd.Comments <> 'discounted calls' "
+					+ "group by n order by Amount desc limit 5";
+		}
 		
 		Cursor cursor = appDB.rawQuery(query);
 		
@@ -269,11 +280,8 @@ public abstract class PhoneBill {
 				
 				try {
 					
-					double amt = cursor.getDouble(1);
-					float amount = Math.round(amt * 100)/100;
-					
 					data.put("contact", cursor.getString(0));
-					data.put("amount", amount);
+					data.put("amount", cursor.getFloat(1));
 					resultData.put(data);
 					
 				} catch (JSONException e) {
@@ -293,11 +301,25 @@ public abstract class PhoneBill {
 	public JSONArray getSummaryByContactGroups() {
 
 		PBAApplicationDB appDB = PBAApplicationDB.getInstance();
+
+		String query = "";
 		
-		String query = "select case when cg.GroupName is null then 'Others' else cg.GroupName end as GroupN, "
-				+ "sum(cd.Amount) as Amount "
-				+ "from BillCallDetails as cd left outer join ContactGroups as cg on cd.PhoneNo = cg.PhoneNo "
-				+ "where cd.BillNo = '" + billNo + "' group by GroupN";
+		if(PBAApplication.getInstance().includeDiscountedCalls()){
+			
+			query = "select case when cg.GroupName is null then 'Others' else cg.GroupName end as GroupN, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join (select distinct PhoneNo, GroupName from ContactGroups) as cg "
+					+ "on cd.PhoneNo = cg.PhoneNo where cd.BillNo = '" + billNo + "' "
+					+ "group by GroupN order by Amount desc";
+		}
+		else{
+			
+			query = "select case when cg.GroupName is null then 'Others' else cg.GroupName end as GroupN, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join (select distinct PhoneNo, GroupName from ContactGroups) as cg "
+					+ "on cd.PhoneNo = cg.PhoneNo where cd.BillNo = '" + billNo + "' "
+					+ "and cd.Comments <> 'discounted calls' group by GroupN order by Amount desc";
+		}
 		
 		Cursor cursor = appDB.rawQuery(query);
 		
@@ -311,10 +333,8 @@ public abstract class PhoneBill {
 				
 				try{
 					
-					double amt = cursor.getDouble(1);
-					float amount = Math.round(amt * 100)/100;
 					data.put("group", cursor.getString(0));
-					data.put("amount", amount);
+					data.put("amount", cursor.getFloat(1));
 					
 					resultData.put(data);
 					
@@ -324,6 +344,61 @@ public abstract class PhoneBill {
 				
 				
 			}while(cursor.moveToNext());
+			
+		}
+		
+		cursor.close();
+		
+		return resultData;
+	}
+
+	public JSONArray getSummaryByContactNames() {
+
+		PBAApplicationDB appDB = PBAApplicationDB.getInstance();
+		
+		String query = "";
+		
+		if(PBAApplication.getInstance().includeDiscountedCalls()){
+			
+			query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
+					+ "where cd.BillNo = '" + billNo + "' "
+					+ "group by n order by Amount desc";
+		}
+		else{
+			
+			query = "select case when cn.Name is null then cd.PhoneNo else cn.Name end as n, "
+					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
+					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
+					+ "where cd.BillNo = '" + billNo + "' "
+					+ "and cd.Comments <> 'discounted calls' "
+					+ "group by n order by Amount desc";
+		}
+		
+		Cursor cursor = appDB.rawQuery(query);
+		
+		JSONArray resultData = new JSONArray();
+		
+		if(cursor.moveToFirst()){
+			
+			do{
+				
+				JSONObject data = new JSONObject(); 
+				
+				try {
+
+					double amt = cursor.getDouble(1);
+					float amount = (float) (Math.round(amt * 100.00) / 100.00);
+					data.put("name", cursor.getString(0));
+					data.put("amount", amount);
+					resultData.put(data);
+					
+				} catch (JSONException e) {
+					// Ignore.
+				}
+				
+			} while(cursor.moveToNext());
 			
 		}
 		

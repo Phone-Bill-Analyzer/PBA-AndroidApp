@@ -26,4 +26,11 @@ public class AppJavaScriptInterface {
 		
 	}
 	
+	@JavascriptInterface
+	public String getSummaryByContactNames(){
+		
+		return bill.getSummaryByContactNames().toString();
+		
+	}
+	
 }

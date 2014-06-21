@@ -46,7 +46,7 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 			}
 		}
 		
-		TextView bill_no = (TextView) rowView.findViewById(R.id.bill_no);
+		TextView phone_no = (TextView) rowView.findViewById(R.id.phone_no);
 		TextView bill_text = (TextView) rowView.findViewById(R.id.bill_text);
 		
 		TextView billDate = (TextView) rowView.findViewById(R.id.bill_date);
@@ -60,7 +60,7 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 			billDate.setVisibility(View.GONE);
 			billMonth.setVisibility(View.GONE);
 			
-			bill_no.setText("New Bill");
+			phone_no.setText("New Bill");
 			bill_text.setText("Click to upload a new Bill");
 			
 		}
@@ -69,8 +69,17 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 			billDate.setText(bill.getBillDate());
 			billMonth.setText(bill.getBillMonth());
 			
-			bill_no.setText(bill.getBillNo());
-			bill_text.setText("Phone No: " + bill.getPhoneNumber());
+			phone_no.setText(bill.getPhoneNumber());
+			String bt = "";
+			
+			if(bill.getBillType().contains("Airtel")){
+				bt = "Airtel Bill No: " + bill.getBillNo();
+			}
+			else if(bill.getBillType().contains("Vodafone")){
+				bt = "Vodafone Bill No: " + bill.getBillNo();
+			}
+			
+			bill_text.setText(bt);
 		}
 		
 		return rowView;

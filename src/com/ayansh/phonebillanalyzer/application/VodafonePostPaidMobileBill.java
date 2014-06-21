@@ -167,7 +167,7 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 					}
 					
 				}
-				else if(dateTime.length() == 17 && dateTime.charAt(8) == '-' && itemWords.length >= 4){
+				else if(dateTime.length() == 17 && dateTime.charAt(8) == '-' && itemWords.length > 4){
 					// These are roaming ones.
 					String dt = dateTime.substring(0, 8);
 					String tm = dateTime.substring(9, 17);
@@ -184,9 +184,9 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 						pbi.setCallDate(sdf2.format(date));
 						pbi.setCallTime(tm);
 						
-						pbi.setPhoneNumber(itemWords[2]);
-						pbi.setDuration(itemWords[3]);
-						pbi.setCost(Float.valueOf(itemWords[4]));
+						pbi.setPhoneNumber(itemWords[4]);
+						pbi.setDuration(itemWords[5]);
+						pbi.setCost(Float.valueOf(itemWords[6]));
 						
 						callDetails.add(pbi);
 						

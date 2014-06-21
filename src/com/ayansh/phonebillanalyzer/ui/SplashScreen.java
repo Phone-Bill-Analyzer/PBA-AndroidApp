@@ -20,7 +20,6 @@ import com.ayansh.phonebillanalyzer.billingutil.IabHelper.QueryInventoryFinished
 import com.ayansh.phonebillanalyzer.billingutil.IabResult;
 import com.ayansh.phonebillanalyzer.billingutil.Inventory;
 import com.ayansh.phonebillanalyzer.billingutil.Purchase;
-import com.google.analytics.tracking.android.EasyTracker;
 
 public class SplashScreen extends Activity implements
 		OnIabSetupFinishedListener, QueryInventoryFinishedListener {
@@ -44,10 +43,7 @@ public class SplashScreen extends Activity implements
         
         // Set the context of the application
         app.setContext(getApplicationContext());
-		
-		// Tracking.
-        EasyTracker.getInstance().activityStart(this);
-        
+
 		// Accept my Terms
         if (!app.isEULAAccepted()) {
 			
@@ -253,7 +249,6 @@ public class SplashScreen extends Activity implements
 	public void onStop() {
 		super.onStop();
 		// The rest of your onStop() code.
-		EasyTracker.getInstance().activityStop(this);
 	}
 	
 	@Override

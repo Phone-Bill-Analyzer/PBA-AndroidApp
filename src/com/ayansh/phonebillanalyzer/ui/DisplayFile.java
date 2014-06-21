@@ -16,8 +16,7 @@ import android.webkit.WebView;
 
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
-import com.google.ads.AdView;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.ads.AdView;
 
 public class DisplayFile extends Activity {
 	
@@ -30,10 +29,7 @@ public class DisplayFile extends Activity {
 		
 		super.onCreate(savedInstanceState);       
         setContentView(R.layout.file_display);
-        
-        // Tracking.
-        EasyTracker.getInstance().activityStart(this);
-        
+     
         my_web_view = (WebView) findViewById(R.id.webview);
         
         String title = this.getIntent().getStringExtra("Title");
@@ -120,7 +116,6 @@ public class DisplayFile extends Activity {
 	public void onStop() {
 		super.onStop();
 		// The rest of your onStop() code.
-		EasyTracker.getInstance().activityStop(this);
 	}
 
 }

@@ -1,24 +1,35 @@
 package com.ayansh.phonebillanalyzer.application;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.util.Log;
 
+import com.ayansh.phonebillanalyzer.R;
+import com.ayansh.phonebillanalyzer.ui.SettingsActivity;
 import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 
 public class PBAApplication {
 
@@ -28,6 +39,7 @@ public class PBAApplication {
 	
 	private PBAApplicationDB appDB;
 	private Context context;
+	private Tracker tracker;
 	
 	HashMap<String, String> Options;
 	private ArrayList<PhoneBill> phoneBillList;
@@ -61,6 +73,20 @@ public class PBAApplication {
 	
 	public Context getContext() {
 		return context;
+	}
+	
+	public synchronized Tracker getTracker(){
+		
+		if(tracker == null){
+			
+			GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
+			
+			tracker = analytics.newTracker(R.xml.global_tracker);
+			
+		}
+		
+		return tracker;
+		
 	}
 	
 	// Get all Options
@@ -173,6 +199,15 @@ public class PBAApplication {
 		}
 
 	}
+	
+	boolean includeDiscountedCalls(){
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean include = sharedPref.getBoolean(SettingsActivity.INC_DISC_CALLS, true);
+		
+		return include;
+		
+	}
 
 	public ArrayList<PhoneBill> getPhoneBillList(boolean reload) {
 		
@@ -206,7 +241,7 @@ public class PBAApplication {
 			// Get Contact Name and Group Names
 			try {
 				
-				JSONObject contactData = PBAApplication.getInstance().getContactDetails(pNo);
+				JSONObject contactData = getContactDetails(pNo);
 				
 				if (contactData != null) {
 
@@ -242,7 +277,7 @@ public class PBAApplication {
 
 				}
 				
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				// Forget it
 				Log.e(PBAApplication.TAG, e.getMessage(), e);
 			}
@@ -253,7 +288,7 @@ public class PBAApplication {
 	}
 	
 	// Get Contact Details from Phone Number
-	JSONObject getContactDetails(String pNo) throws JSONException {
+	JSONObject getContactDetails(String pNo) throws Exception {
 		
 		JSONObject contactData = new JSONObject();
 		
@@ -333,5 +368,47 @@ public class PBAApplication {
 			return null;
 		}
 
+	}
+
+	public void downloaDBData() {
+		
+		/*
+		 * Add Permission also
+		 * <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+		 */
+		File sd = Environment.getExternalStorageDirectory();
+		File data = Environment.getDataDirectory();
+		FileChannel source = null;
+		FileChannel destination = null;
+		
+		String currentDBPath = "/data/" + "com.ayansh.phonebillanalyzer"
+				+ "/databases/" + "PBA";
+		String backupDBPath = "PBA";
+		File currentDB = new File(data, currentDBPath);
+		File backupDB = new File(sd, backupDBPath);
+		try {
+			source = new FileInputStream(currentDB).getChannel();
+			destination = new FileOutputStream(backupDB).getChannel();
+			destination.transferFrom(source, 0, source.size());
+			source.close();
+			destination.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void deleteBill(String billNo) {
+		
+		List<String> queries = new ArrayList<String>();
+		
+		String query = "DELETE FROM BillMetaData WHERE BillNo = '" + billNo + "'";
+		queries.add(query);
+		
+		query = "DELETE FROM BillCallDetails WHERE BillNo = '" + billNo + "'";
+		queries.add(query);
+		
+		appDB.executeQueries(queries);
+		
 	}
 }

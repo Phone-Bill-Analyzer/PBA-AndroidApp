@@ -30,6 +30,7 @@ import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
 
 public class Main extends Activity implements OnItemClickListener, Invoker {
 	
@@ -50,7 +51,7 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		PBAApplication.getInstance().setContext(getApplicationContext());
 
 		// Google Analytics
-		PBAApplication.getInstance().getTracker();
+		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
 		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {

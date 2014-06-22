@@ -30,6 +30,7 @@ import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.application.ReadPDFFileCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
 
 public class NewBill extends Activity implements OnClickListener, Invoker {
 	
@@ -46,6 +47,8 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		
 		setContentView(R.layout.new_bill);
 
+		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
+		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
@@ -111,6 +114,11 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 	}
 
 	private void deleteOldBillDetails() {
+		
+		if (Constants.isPremiumVersion()) {
+			// Premium Version
+			return;
+		}
 		
 		PBAApplication app = PBAApplication.getInstance();
 		

@@ -17,6 +17,7 @@ import android.webkit.WebView;
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
 
 public class DisplayFile extends Activity {
 	
@@ -31,6 +32,8 @@ public class DisplayFile extends Activity {
         setContentView(R.layout.file_display);
      
         my_web_view = (WebView) findViewById(R.id.webview);
+        
+        PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
         
         String title = this.getIntent().getStringExtra("Title");
         if(title == null || title.contentEquals("")){

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 import com.ayansh.phonebillanalyzer.R;
+import com.ayansh.phonebillanalyzer.application.PBAApplication;
+import com.google.android.gms.analytics.HitBuilders;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -14,6 +16,8 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
 		
         super.onCreate(savedInstanceState);
+        
+        PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
         
         addPreferencesFromResource(R.xml.preferences);
     }

@@ -23,6 +23,7 @@ import com.ayansh.phonebillanalyzer.billingutil.IabHelper;
 import com.ayansh.phonebillanalyzer.billingutil.IabHelper.OnIabPurchaseFinishedListener;
 import com.ayansh.phonebillanalyzer.billingutil.IabResult;
 import com.ayansh.phonebillanalyzer.billingutil.Purchase;
+import com.google.android.gms.analytics.HitBuilders;
 
 /**
  * @author varun
@@ -40,6 +41,8 @@ public class ActivatePremiumFeatures extends Activity implements
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.premium_features);
+		
+		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
 		
 		prodName = (TextView) findViewById(R.id.product_name);
 		prodDesc = (TextView) findViewById(R.id.product_desc);

@@ -30,7 +30,7 @@ import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.GoogleAnalytics;
 
 public class Main extends Activity implements OnItemClickListener, Invoker {
 	
@@ -49,9 +49,6 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		setTitle("Bill List");
 		
 		PBAApplication.getInstance().setContext(getApplicationContext());
-
-		// Google Analytics
-		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
 		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
@@ -85,6 +82,20 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		
 		listView.setOnItemClickListener(this);
 		
+	}
+	
+	@Override
+	protected void onStart(){
+		
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
+	@Override
+	protected void onStop(){
+		
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 
 	@Override

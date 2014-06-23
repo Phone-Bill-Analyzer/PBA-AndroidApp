@@ -30,7 +30,7 @@ import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.ayansh.phonebillanalyzer.application.ReadPDFFileCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.GoogleAnalytics;
 
 public class NewBill extends Activity implements OnClickListener, Invoker {
 	
@@ -46,8 +46,6 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.new_bill);
-
-		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
 		
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
@@ -78,11 +76,28 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		showHelp();
 	}
 
+	@Override
+	protected void onStart(){
+		
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
+	@Override
+	protected void onStop(){
+		
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+	
 	private void showHelp() {
 		
 		String help = "Note : Internet connectivity is required to analyze the bill "
 				+ "because this app depends on Google Charts API"
 				+ "\n\n";
+		
+		help = help + "Note : You will need a file browser app to browse files on "
+				+ "device and upload.\n\n";
 		
 		if (!Constants.isPremiumVersion()) {
 		

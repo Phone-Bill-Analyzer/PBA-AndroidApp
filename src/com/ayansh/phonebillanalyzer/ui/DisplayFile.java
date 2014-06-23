@@ -17,7 +17,7 @@ import android.webkit.WebView;
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.GoogleAnalytics;
 
 public class DisplayFile extends Activity {
 	
@@ -32,9 +32,7 @@ public class DisplayFile extends Activity {
         setContentView(R.layout.file_display);
      
         my_web_view = (WebView) findViewById(R.id.webview);
-        
-        PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
-        
+                
         String title = this.getIntent().getStringExtra("Title");
         if(title == null || title.contentEquals("")){
         	title = getResources().getString(R.string.app_name);
@@ -60,6 +58,20 @@ public class DisplayFile extends Activity {
        	
        	showFromRawSource();
        	
+	}
+	
+	@Override
+	protected void onStart(){
+		
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
+	@Override
+	protected void onStop(){
+		
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 	
 	@Override
@@ -113,12 +125,6 @@ public class DisplayFile extends Activity {
 		} catch (IOException e) {
 			Log.e(PBAApplication.TAG, e.getMessage(), e);
 		}
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		// The rest of your onStop() code.
 	}
 
 }

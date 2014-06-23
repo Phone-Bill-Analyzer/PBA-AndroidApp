@@ -29,7 +29,6 @@ import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.ui.SettingsActivity;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
 
 public class PBAApplication {
 
@@ -39,7 +38,6 @@ public class PBAApplication {
 	
 	private PBAApplicationDB appDB;
 	private Context context;
-	private Tracker tracker;
 	
 	HashMap<String, String> Options;
 	private ArrayList<PhoneBill> phoneBillList;
@@ -68,25 +66,14 @@ public class PBAApplication {
 			appDB = PBAApplicationDB.getInstance(context);
 			appDB.openDBForWriting();
 			appDB.loadOptions();
+			
+			// Initialize Google Analytics
+			GoogleAnalytics.getInstance(context).newTracker(R.xml.global_tracker);
 		}
 	}
 	
 	public Context getContext() {
 		return context;
-	}
-	
-	public synchronized Tracker getTracker(){
-		
-		if(tracker == null){
-			
-			GoogleAnalytics analytics = GoogleAnalytics.getInstance(context);
-			
-			tracker = analytics.newTracker(R.xml.global_tracker);
-			
-		}
-		
-		return tracker;
-		
 	}
 	
 	// Get all Options

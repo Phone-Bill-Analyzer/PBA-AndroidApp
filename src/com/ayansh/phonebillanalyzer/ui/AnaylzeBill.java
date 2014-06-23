@@ -23,7 +23,7 @@ import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.GoogleAnalytics;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class AnaylzeBill extends Activity implements OnItemSelectedListener {
@@ -41,9 +41,7 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		setContentView(R.layout.bill_analysis);
 		
 		setTitle("Analyze Bill");
-		
-		PBAApplication.getInstance().getTracker().send(new HitBuilders.AppViewBuilder().build());
-		
+				
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
@@ -75,6 +73,20 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		
 		webView.addJavascriptInterface(new AppJavaScriptInterface(bill), "App");
 		
+	}
+	
+	@Override
+	protected void onStart(){
+		
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+	
+	@Override
+	protected void onStop(){
+		
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 	
 	private void showFromRawSource() {

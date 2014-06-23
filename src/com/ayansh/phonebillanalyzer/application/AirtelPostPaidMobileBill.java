@@ -112,6 +112,10 @@ public class AirtelPostPaidMobileBill extends PhoneBill {
 					}
 					
 					pbi.setDuration(itemWords[4]);
+					
+					// Remove **
+					itemWords[5] = itemWords[5].replaceAll("\\*", "");
+					
 					pbi.setCost(Float.valueOf(itemWords[5]));
 					
 					if(itemWords.length == 7){

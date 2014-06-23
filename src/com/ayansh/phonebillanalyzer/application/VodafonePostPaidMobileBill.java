@@ -133,6 +133,10 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 						
 						pbi.setPhoneNumber(itemWords[1]);
 						pbi.setDuration(itemWords[2]);
+						
+						// Remove **
+						itemWords[3] = itemWords[3].replaceAll("\\*", "");
+						
 						pbi.setCost(Float.valueOf(itemWords[3]));
 						
 						callDetails.add(pbi);
@@ -158,6 +162,10 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 						
 						pbi.setPhoneNumber("data");
 						pbi.setDuration(itemWords[4]);
+						
+						// Remove **
+						itemWords[5] = itemWords[5].replaceAll("\\*", "");
+						
 						pbi.setCost(Float.valueOf(itemWords[5]));
 						
 						callDetails.add(pbi);
@@ -186,6 +194,10 @@ public class VodafonePostPaidMobileBill extends PhoneBill {
 						
 						pbi.setPhoneNumber(itemWords[4]);
 						pbi.setDuration(itemWords[5]);
+						
+						// Remove **
+						itemWords[6] = itemWords[6].replaceAll("\\*", "");
+						
 						pbi.setCost(Float.valueOf(itemWords[6]));
 						
 						callDetails.add(pbi);

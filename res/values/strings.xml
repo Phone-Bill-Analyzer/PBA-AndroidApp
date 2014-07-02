@@ -21,6 +21,7 @@
 	<string-array name="bill_types">
         <item>APPM : Airtel Post Paid Mobile</item>
         <item>VPPM : Vodafone Post Paid Mobile</item>
+        <item>RPPM : Reliance Post Paid Mobile</item>
     </string-array>
     
 	<string-array name="analysis_type">

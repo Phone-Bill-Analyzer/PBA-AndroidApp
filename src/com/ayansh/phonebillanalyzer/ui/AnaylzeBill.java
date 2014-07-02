@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
@@ -32,6 +34,7 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 	private WebView webView;
 	private String htmlText;
 	private Spinner analysisType;
+	private ProgressDialog pd;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		
 		webView.addJavascriptInterface(new AppJavaScriptInterface(bill), "App");
 		
+		webView.setWebViewClient(new myWebViewClient());
+		
 	}
 	
 	@Override
@@ -90,6 +95,8 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 	}
 	
 	private void showFromRawSource() {
+		
+		pd = ProgressDialog.show(this, "Loading...", "Please wait while we load the chart");
 		
 		//webView.clearCache(true);
 		
@@ -149,6 +156,20 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		
 		getHTMLFromFile("all_contacts_table.html");
 		showFromRawSource();
+	}
+	
+	private class myWebViewClient extends WebViewClient{
+		
+		@Override
+		public void onPageFinished(WebView view, String url){
+			
+			if(pd != null && pd.isShowing()){
+				pd.dismiss();
+			}
+			
+			super.onPageFinished(view, url);
+			
+		}
 	}
 	
 }

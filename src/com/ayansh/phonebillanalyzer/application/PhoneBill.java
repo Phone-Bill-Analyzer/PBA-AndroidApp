@@ -168,17 +168,25 @@ public abstract class PhoneBill {
 			sbuilder.append(line);
 		}
 		
-		JSONObject result = new JSONObject(sbuilder.toString());
-		
-		int status = result.getInt("ErrorCode");
-		String message = result.getString("Message");
-		pages = result.getInt("PageCount");
-		fileText = result.getString("Text");
-		
-		
-		if(status > 0){
-			// Error
-			throw new Exception(message);
+		try{
+			
+			JSONObject result = new JSONObject(sbuilder.toString());
+			
+			int status = result.getInt("ErrorCode");
+			String message = result.getString("Message");
+			pages = result.getInt("PageCount");
+			fileText = result.getString("Text");
+			
+			
+			if(status > 0){
+				// Error
+				throw new Exception(message);
+			}
+			
+		} catch(JSONException e){
+			
+			throw new Exception("Cannot read the PDF bill. Please report this error to the developer");
+			
 		}
 		
 	}

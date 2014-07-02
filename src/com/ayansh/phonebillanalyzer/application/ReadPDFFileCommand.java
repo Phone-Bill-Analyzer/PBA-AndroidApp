@@ -41,6 +41,10 @@ public class ReadPDFFileCommand extends Command {
 			bill = new VodafonePostPaidMobileBill(fileName, fileUri);
 			break;
 			
+		case 2:
+			bill = new ReliancePostPaidMobileBill(fileName, fileUri);
+			break;
+			
 		}
 		
 		bill.setPassword(password);

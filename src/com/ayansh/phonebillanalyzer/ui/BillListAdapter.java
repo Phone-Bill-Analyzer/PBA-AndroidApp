@@ -78,6 +78,9 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 			else if(bill.getBillType().contains("Vodafone")){
 				bt = "Vodafone Bill No: " + bill.getBillNo();
 			}
+			else if(bill.getBillType().contains("Reliance")){
+				bt = "Reliance Bill No: " + bill.getBillNo();
+			}
 			
 			bill_text.setText(bt);
 		}

@@ -23,7 +23,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ayansh.phonebillanalyzer.R;
-import com.ayansh.phonebillanalyzer.application.AirtelPostPaidMobileBill;
 import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
@@ -71,7 +70,7 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		
 		billList.addAll(PBAApplication.getInstance().getPhoneBillList(true));
 		
-		billList.add(0, new AirtelPostPaidMobileBill("DUMMY"));	// Dummy Entry
+		billList.add(0, new PhoneBill("DUMMY"));	// Dummy Entry
 		
 		listView = (ListView) findViewById(R.id.bill_list);
 		
@@ -181,7 +180,7 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 			
 			billList.clear();
 			billList.addAll(PBAApplication.getInstance().getPhoneBillList(true));
-			billList.add(0, new AirtelPostPaidMobileBill("DUMMY"));	// Dummy Entry
+			billList.add(0, new PhoneBill("DUMMY"));	// Dummy Entry
 			
 			adapter.notifyDataSetChanged();
 			break;

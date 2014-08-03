@@ -30,24 +30,29 @@ public class ReadPDFFileCommand extends Command {
 	
 	@Override
 	protected void execute(ResultObject result) throws Exception {
-				
+		
+		String type = "";
+		
+		bill = new PhoneBill(fileName, fileUri);		
+		bill.setPassword(password);
+		
 		switch(billType){
 		
 		case 0:
-			bill = new AirtelPostPaidMobileBill(fileName, fileUri);
+			type = "APPM";
 			break;
-		
+			
 		case 1:
-			bill = new VodafonePostPaidMobileBill(fileName, fileUri);
+			type = "VPPM";
 			break;
 			
 		case 2:
-			bill = new ReliancePostPaidMobileBill(fileName, fileUri);
+			type = "RPPM";
 			break;
-			
+		
 		}
 		
-		bill.setPassword(password);
+		bill.setBillType(type);
 		
 		ProgressInfo pi;
 		
@@ -57,7 +62,6 @@ public class ReadPDFFileCommand extends Command {
 		// Parse the Text and read bill details
 		pi = new ProgressInfo(40, "Reading bill details");
 		publishProgress(pi);
-		bill.parseBillText();
 		
 		// Save Bill
 		pi = new ProgressInfo(80, "Saving bill details for analysis");

@@ -72,13 +72,13 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 			phone_no.setText(bill.getPhoneNumber());
 			String bt = "";
 			
-			if(bill.getBillType().contains("Airtel")){
+			if(bill.getBillType().contains("Airtel") || bill.getBillType().contains("APPM")){
 				bt = "Airtel Bill No: " + bill.getBillNo();
 			}
-			else if(bill.getBillType().contains("Vodafone")){
+			else if(bill.getBillType().contains("Vodafone") || bill.getBillType().contains("VPPM")){
 				bt = "Vodafone Bill No: " + bill.getBillNo();
 			}
-			else if(bill.getBillType().contains("Reliance")){
+			else if(bill.getBillType().contains("Reliance") || bill.getBillType().contains("RPPM")){
 				bt = "Reliance Bill No: " + bill.getBillNo();
 			}
 			

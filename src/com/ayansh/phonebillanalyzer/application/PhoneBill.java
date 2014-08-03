@@ -27,7 +27,7 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.net.Uri;
 
-public abstract class PhoneBill {
+public class PhoneBill {
 
 	protected String phoneNo, billNo, dueDate, fromDate, toDate, billDate;
 	protected List<CallDetailItem> callDetails;
@@ -36,10 +36,7 @@ public abstract class PhoneBill {
 	protected String billType;
 	protected String fileName, password;
 	protected Uri fileURI;
-	protected String fileText;
 	protected int pages;
-	
-	public abstract void parseBillText();
 	
 	public PhoneBill (String name, Uri uri){
 		fileURI = uri;
@@ -100,6 +97,10 @@ public abstract class PhoneBill {
 		return billType;
 	}
 	
+	public void setBillType(String type){
+		billType = type;
+	}
+	
 	@SuppressLint("SimpleDateFormat")
 	public void setBillDate(String date){
 		
@@ -141,7 +142,7 @@ public abstract class PhoneBill {
 	public void readPDFFile() throws Exception{
 		
 		HttpClient httpClient = new DefaultHttpClient();
-	    HttpPost httpPost = new HttpPost("http://apps.ayansh.com/Phone-Bill-Analyzer/read_pdf.php");
+	    HttpPost httpPost = new HttpPost("http://apps.ayansh.com/Phone-Bill-Analyzer/parse_bill.php");
 	    
 	    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -149,7 +150,8 @@ public abstract class PhoneBill {
 	    InputStream is = PBAApplication.getInstance().getContext().getContentResolver().openInputStream(fileURI);
 	    InputStreamBody isb = new InputStreamBody(is, fileName);
 	    
-	    builder.addTextBody("password", password);
+	    //builder.addTextBody("password", password);
+	    builder.addPart("type", new StringBody(billType));
 	    builder.addPart("password", new StringBody(password));
 	    builder.addPart("file", isb);
 	    
@@ -175,8 +177,25 @@ public abstract class PhoneBill {
 			int status = result.getInt("ErrorCode");
 			String message = result.getString("Message");
 			pages = result.getInt("PageCount");
-			fileText = result.getString("Text");
+
+			JSONObject billDetails = result.getJSONObject("BillDetails");
 			
+			setPhoneNumber(billDetails.getString("PhoneNumber"));
+			setBillDate(billDetails.getString("BillDate"));
+			billNo = billDetails.getString("BillNo");
+			setFromDate(billDetails.getString("FromDate"));
+			setToDate(billDetails.getString("ToDate"));
+			setDueDate(billDetails.getString("DueDate"));
+			
+			JSONArray call_details = result.getJSONArray("CallDetails");
+			
+			CallDetailItem cd = null;
+			
+			for(int i=0; i<call_details.length(); i++){
+			
+				cd = new CallDetailItem(call_details.getJSONObject(i));
+				callDetails.add(cd);
+			}
 			
 			if(status > 0){
 				// Error

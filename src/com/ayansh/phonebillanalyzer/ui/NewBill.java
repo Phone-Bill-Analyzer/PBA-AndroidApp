@@ -99,6 +99,9 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 		help = help + "Note : You will need a file browser app to browse files on "
 				+ "device and upload.\n\n";
 		
+		help = help + "Note : You must download and save the file on your phone. Only then "
+				+ "the app can read the file. Files from cache can't be read properly.\n\n";
+		
 		if (!Constants.isPremiumVersion()) {
 		
 			help = help + "Note : You are using the free version of the app.\n"
@@ -178,12 +181,15 @@ public class NewBill extends Activity implements OnClickListener, Invoker {
 	            // Get the path
 	            Cursor returnCursor = getContentResolver().query(fileURI, null, null, null, null);
 	            
-	            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-	            returnCursor.moveToFirst();
-	            
-	            String fname = returnCursor.getString(nameIndex);
-	            
-	            fileName.setText(fname);
+	            if(returnCursor != null){
+	            	
+	            	int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+		            returnCursor.moveToFirst();
+		            
+		            String fname = returnCursor.getString(nameIndex);
+		            
+		            fileName.setText(fname);
+	            }
 	            
 	        }
 	        

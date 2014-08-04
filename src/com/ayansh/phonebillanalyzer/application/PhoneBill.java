@@ -253,7 +253,12 @@ public class PhoneBill {
 					"'" + cdi.getCallTime() + "'," +
 					"'" + cdi.getDuration() + "'," +
 					"" + cdi.getCost() + "," +
-					"'" + cdi.getComments() + "'" +
+					"'" + cdi.getComments() + "'," +
+					"'" + cdi.getFreeCall() + "'," +
+					"'" + cdi.getRoamingCall() + "'," +
+					"'" + cdi.getSmsCall() + "'," +
+					"'" + cdi.getStdCall() + "'," +
+					"" + cdi.getPulse() + "" +
 					")";
 			
 			queries.add(query);
@@ -291,7 +296,7 @@ public class PhoneBill {
 					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
 					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
 					+ "where cd.BillNo = '" + billNo + "' "
-					+ "and cd.Comments <> 'discounted calls' "
+					+ "and cd.IsFreeCall <> 'X' "
 					+ "group by n order by Amount desc limit 5";
 		}
 		
@@ -345,7 +350,7 @@ public class PhoneBill {
 					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
 					+ "left outer join (select distinct PhoneNo, GroupName from ContactGroups) as cg "
 					+ "on cd.PhoneNo = cg.PhoneNo where cd.BillNo = '" + billNo + "' "
-					+ "and cd.Comments <> 'discounted calls' group by GroupN order by Amount desc";
+					+ "and cd.IsFreeCall <> 'X' group by GroupN order by Amount desc";
 		}
 		
 		Cursor cursor = appDB.rawQuery(query);
@@ -399,7 +404,7 @@ public class PhoneBill {
 					+ "sum(cd.Amount) as Amount from BillCallDetails as cd "
 					+ "left outer join ContactNames as cn on cd.PhoneNo = cn.PhoneNo "
 					+ "where cd.BillNo = '" + billNo + "' "
-					+ "and cd.Comments <> 'discounted calls' "
+					+ "and cd.IsFreeCall <> 'X' "
 					+ "group by n order by Amount desc";
 		}
 		

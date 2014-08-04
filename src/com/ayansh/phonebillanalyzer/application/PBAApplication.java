@@ -202,6 +202,10 @@ public class PBAApplication {
 			phoneBillList = appDB.getPhoneBillList();
 		}
 		
+		if(phoneBillList == null){
+			phoneBillList = new ArrayList<PhoneBill>();
+		}
+		
 		return phoneBillList;
 		
 	}

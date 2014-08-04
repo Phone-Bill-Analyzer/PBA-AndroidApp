@@ -15,7 +15,7 @@ import android.util.Log;
 public class PBAApplicationDB extends SQLiteOpenHelper{
 
 	private static final String dbName = "PBA";
-	private static final int dbVersion = 1;
+	private static final int dbVersion = 2;
 	
 	private static PBAApplicationDB appDB;
 	
@@ -71,7 +71,7 @@ public class PBAApplicationDB extends SQLiteOpenHelper{
 				"ToDate VARCHAR, "  +
 				"DueDate VARCHAR"  +
 				")";
-		
+
 		String createBillCallDetailsTable = "CREATE TABLE BillCallDetails (" + 
 				"BillNo VARCHAR , " + // Bill No
 				"PhoneNo VARCHAR, "  +
@@ -79,7 +79,12 @@ public class PBAApplicationDB extends SQLiteOpenHelper{
 				"CallTime VARCHAR, "  +
 				"CallDuration VARCHAR, "  +
 				"Amount VARCHAR, "  +
-				"Comments VARCHAR"  +
+				"Comments VARCHAR, "  +
+				"IsFreeCall VARCHAR, " +
+				"IsRoaming VARCHAR, " +
+				"IsSMS VARCHAR, " +
+				"IsSTD VARCHAR, " +
+				"Pulse INTEGER" +
 				")";
 		
 		// create a new table - if not existing
@@ -103,7 +108,43 @@ public class PBAApplicationDB extends SQLiteOpenHelper{
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
+		
+		switch(oldVersion){
+		
+		case 1:
+			
+			String addCol1 = "ALTER TABLE BillCallDetails ADD COLUMN IsFreeCall VARCHAR";
+			String addCol2 = "ALTER TABLE BillCallDetails ADD COLUMN IsRoaming VARCHAR";
+			String addCol3 = "ALTER TABLE BillCallDetails ADD COLUMN IsSMS VARCHAR";
+			String addCol4 = "ALTER TABLE BillCallDetails ADD COLUMN IsSTD VARCHAR";
+			String addCol5 = "ALTER TABLE BillCallDetails ADD COLUMN Pulse INTEGER";
+			
+			String updateFreeCall = "UPDATE BillCallDetails SET IsFreeCall = case when Comments = 'discounted calls' then 'X' else '' end";
+			String updateComments = "UPDATE BillCallDetails SET Comments = '' WHERE Comments = 'discounted calls'";
+			
+			try {
+				// Upgrading database to version 2
+				Log.i(PBAApplication.TAG, "Upgrading DB from version 1 to 2");
+					
+				db.execSQL(addCol1);
+				db.execSQL(addCol2);
+				db.execSQL(addCol3);
+				db.execSQL(addCol4);
+				db.execSQL(addCol5);
+				db.execSQL(updateFreeCall);
+				db.execSQL(updateComments);
+							
+				Log.i(PBAApplication.TAG, "Upgrade successfully");
+
+			} catch (SQLException e) {
+				// Oops !!
+				Log.e(PBAApplication.TAG, e.getMessage(), e);
+			}
+			/*
+			 * Very important - No break statement here !
+			 */
+		
+		}
 		
 	}
 	
@@ -220,38 +261,6 @@ public class PBAApplicationDB extends SQLiteOpenHelper{
 		Collections.sort(billList, PhoneBill.SortByBillDate);
 		
 		return billList;
-		
-	}
-	
-	ArrayList<CallDetailItem> getCallDetails(String billNo) {
-		
-		ArrayList<CallDetailItem> callDetails = new ArrayList<CallDetailItem>();
-		
-		String sql = "SELECT * FROM BillCallDetails where BillNo = '" + billNo + "'";
-		
-		Cursor cursor = db.rawQuery(sql, null);
-		
-		if(cursor.moveToFirst()){
-			
-			do{
-				
-				CallDetailItem callDetail = new CallDetailItem();
-				
-				callDetail.setPhoneNumber(cursor.getString(cursor.getColumnIndex("PhoneNo")));
-				callDetail.setCallDate(cursor.getString(cursor.getColumnIndex("CallDate")));
-				callDetail.setCallTime(cursor.getString(cursor.getColumnIndex("CallTime")));
-				callDetail.setDuration(cursor.getString(cursor.getColumnIndex("CallDuration")));
-				callDetail.setCost(cursor.getFloat(cursor.getColumnIndex("Amount")));
-				callDetail.setComments(cursor.getString(cursor.getColumnIndex("Comments")));
-				callDetails.add(callDetail);
-				
-			}while(cursor.moveToNext());
-			
-		}
-		
-		cursor.close();
-		
-		return callDetails;
 		
 	}
 	

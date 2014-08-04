@@ -7,14 +7,23 @@ public class CallDetailItem {
 
 	private String callDate, callTime, phoneNumber, duration, comments;
 	private float cost;
+	private String freeCall, roamingCall, smsCall, stdCall;
+	private int pulse;
 	
 	public CallDetailItem(){
 		callDate = callTime = phoneNumber = duration = comments = "";
 		cost = 0;
+		freeCall = roamingCall = smsCall = stdCall = "";
+		pulse = 0;
 	}
 	
 	public CallDetailItem(JSONObject cd) {
 
+		callDate = callTime = phoneNumber = duration = comments = "";
+		cost = 0;
+		freeCall = roamingCall = smsCall = stdCall = "";
+		pulse = 0;
+		
 		try {
 			
 			callDate = cd.getString("callDate");
@@ -23,6 +32,12 @@ public class CallDetailItem {
 			duration = cd.getString("duration");
 			cost = (float) cd.getDouble("cost");
 			comments = cd.getString("comments");
+
+			setFreeCall(cd.getString("freeCall"));
+			setRoamingCall(cd.getString("roamingCall"));
+			setSmsCall(cd.getString("smsCall"));
+			setStdCall(cd.getString("stdCall"));
+			setPulse(cd.getInt("pulse"));
 			
 		} catch (JSONException e) {
 			// Can't do anything :(
@@ -70,6 +85,41 @@ public class CallDetailItem {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public String getFreeCall() {
+		return freeCall;
+	}
+	public void setFreeCall(String freeCall) {
+		this.freeCall = freeCall;
+	}
+
+	public String getRoamingCall() {
+		return roamingCall;
+	}
+	public void setRoamingCall(String roamingCall) {
+		this.roamingCall = roamingCall;
+	}
+
+	public String getSmsCall() {
+		return smsCall;
+	}
+	public void setSmsCall(String smsCall) {
+		this.smsCall = smsCall;
+	}
+
+	public String getStdCall() {
+		return stdCall;
+	}
+	public void setStdCall(String stdCall) {
+		this.stdCall = stdCall;
+	}
+
+	public int getPulse() {
+		return pulse;
+	}
+	public void setPulse(int pulse) {
+		this.pulse = pulse;
 	}
 	
 }

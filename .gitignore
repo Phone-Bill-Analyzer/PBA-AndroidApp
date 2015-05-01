@@ -32,3 +32,9 @@ proguard/
 
 # Log Files
 *.log
+
+# Ignore the Generated Files
+# We must ignore the complete directory Gen, Bin and .APK files
+gen/
+bin/
+*.apk

@@ -1,0 +1,46 @@
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="AppCompatResource">
+
+    <item
+        android:id="@+id/Analyze"
+        android:icon="@drawable/analyze"
+        android:showAsAction="ifRoom"
+        android:title="@string/help"></item>
+
+    <item android:icon="@drawable/help"
+		  android:id="@+id/Help"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/help">
+	</item>
+	
+	<item android:icon="@drawable/settings"
+        android:id="@+id/settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings"/>
+
+	<item android:icon="@drawable/ic_action_refresh"
+		  android:id="@+id/ReloadContacts"
+		  android:showAsAction="withText"
+		  android:title="@string/reload_contacts">
+	</item>
+	
+	<item android:icon="@drawable/about"
+		  android:id="@+id/About"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/about">
+	</item>
+	
+	<item android:icon="@drawable/ic_action_download"
+		  android:id="@+id/DownloaDB"
+		  android:showAsAction="ifRoom"
+		  android:title="@string/download_db">
+	</item>
+
+    <item android:icon="@drawable/ic_action_download"
+        android:id="@+id/DownloadCSV"
+        android:showAsAction="ifRoom"
+        android:title="@string/download_csv">
+    </item>
+
+</menu>

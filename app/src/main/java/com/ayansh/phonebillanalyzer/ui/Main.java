@@ -151,15 +151,32 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 			pd = ProgressDialog.show(this, "Please wait", "Re-loading contacts information");
 			ce.execute(command);
 			break;
-			
-		case R.id.DownloaDB:
-			PBAApplication.getInstance().downloaDBData();
-			break;
+
+        case R.id.DownloaDB:
+            PBAApplication.getInstance().downloaDBData();
+            Toast.makeText(this,"DB File Downloaded",Toast.LENGTH_LONG).show();
+            break;
+
+        case R.id.DownloadCSV:
+            PBAApplication.getInstance().downloadCSVData();
+            Toast.makeText(this,"CSV File Downloaded in folder: Android/Data",Toast.LENGTH_LONG).show();
+            break;
+
+        case R.id.Analyze:
+            compareBills();
+            break;
 		
 		}
 		
 		return true;
 	}
+
+    private void compareBills(){
+
+        Intent compareBills = new Intent(Main.this, CompareBills.class);
+        Main.this.startActivity(compareBills);
+
+    }
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {

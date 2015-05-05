@@ -17,17 +17,14 @@
 			
 				var data = new google.visualization.DataTable();
 	            data.addColumn('string', 'Date');
-	            data.addColumn('number', 'Incoming');
-	            data.addColumn({type: 'number', role: 'annotation'});
-	            data.addColumn('number', 'Outgoing');
+	            data.addColumn('number', 'Amount');
 	            data.addColumn({type: 'number', role: 'annotation'});
 
 				var jsonData = JSON.parse(App.compareMonthlyUsage());
 				
 				for(var i=0; i< jsonData.length; i++){
-					var inamt = Math.round(jsonData[i].inamt * 100) / 100;
-					var outamt = Math.round(jsonData[i].outamt * 100) / 100;
-					data.addRow([jsonData[i].date,inamt,inamt,outamt,outamt]);
+					var amt = Math.round(jsonData[i].amt * 100) / 100;
+					data.addRow([jsonData[i].date,amt,amt]);
 				}
 
                 var options = {

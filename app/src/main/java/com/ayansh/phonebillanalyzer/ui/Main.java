@@ -1,13 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.varunverma.CommandExecuter.CommandExecuter;
-import org.varunverma.CommandExecuter.Invoker;
-import org.varunverma.CommandExecuter.ProgressInfo;
-import org.varunverma.CommandExecuter.ResultObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -30,6 +22,14 @@ import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
+
+import org.varunverma.CommandExecuter.CommandExecuter;
+import org.varunverma.CommandExecuter.Invoker;
+import org.varunverma.CommandExecuter.ProgressInfo;
+import org.varunverma.CommandExecuter.ResultObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Activity implements OnItemClickListener, Invoker {
 	
@@ -127,7 +127,11 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		case R.id.settings:
 			Intent settings = new Intent(Main.this, SettingsActivity.class);
 			Main.this.startActivity(settings);
-			
+			break;
+
+		case R.id.web:
+			Intent webSync = new Intent(Main.this, WebSync.class);
+			Main.this.startActivity(webSync);
 			break;
 			
 		case R.id.Help:

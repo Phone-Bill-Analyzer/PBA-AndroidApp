@@ -1,7 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +10,8 @@ import android.widget.TextView;
 
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
+
+import java.util.List;
 
 public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 

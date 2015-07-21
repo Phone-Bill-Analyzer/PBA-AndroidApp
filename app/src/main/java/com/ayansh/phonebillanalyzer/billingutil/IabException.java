@@ -22,11 +22,7 @@ package com.ayansh.phonebillanalyzer.billingutil;
  * call {@link #getResult()}.
  */
 public class IabException extends Exception {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -3545496420124647039L;
-	IabResult mResult;
+    IabResult mResult;
 
     public IabException(IabResult r) {
         this(r, null);

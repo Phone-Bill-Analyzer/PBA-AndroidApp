@@ -18,6 +18,9 @@
 	<string name="inc_disc_calls_summ">Include discounted calls in analytics</string>
 	<string name="download_db">Download DB</string>
     <string name="download_csv">Download as CSV File</string>
+    <string name="web_analyze">Analyze on Web</string>
+    <string name="session_id">Session ID</string>
+    <string name="web_sync">Sync</string>
 	
 	<string-array name="bill_types">
         <item>APPM : Airtel Post Paid Mobile</item>

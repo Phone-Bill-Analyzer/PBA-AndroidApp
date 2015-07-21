@@ -1,8 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -20,6 +17,9 @@ import com.ayansh.phonebillanalyzer.billingutil.IabHelper.QueryInventoryFinished
 import com.ayansh.phonebillanalyzer.billingutil.IabResult;
 import com.ayansh.phonebillanalyzer.billingutil.Inventory;
 import com.ayansh.phonebillanalyzer.billingutil.Purchase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SplashScreen extends Activity implements
 		OnIabSetupFinishedListener, QueryInventoryFinishedListener {

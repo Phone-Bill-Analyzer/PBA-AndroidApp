@@ -1,10 +1,6 @@
 package com.ayansh.phonebillanalyzer.application;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -17,7 +13,11 @@ import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ResultObject;
 
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeleteRegIdCommand extends Command {
 	

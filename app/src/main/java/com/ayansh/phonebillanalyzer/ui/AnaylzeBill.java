@@ -1,10 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -27,6 +22,11 @@ import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class AnaylzeBill extends Activity implements OnItemSelectedListener {

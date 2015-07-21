@@ -8,12 +8,18 @@
         android:showAsAction="ifRoom"
         android:title="@string/help"></item>
 
-    <item android:icon="@drawable/help"
-		  android:id="@+id/Help"
-		  android:showAsAction="ifRoom"
-		  android:title="@string/help">
+	<item
+		android:id="@+id/web"
+		android:icon="@drawable/ic_action_web_site"
+		android:showAsAction="ifRoom"
+		android:title="@string/web_analyze" />
+
+	<item android:icon="@drawable/help"
+		android:id="@+id/Help"
+		android:showAsAction="ifRoom"
+		android:title="@string/help">
 	</item>
-	
+
 	<item android:icon="@drawable/settings"
         android:id="@+id/settings"
         android:showAsAction="ifRoom"

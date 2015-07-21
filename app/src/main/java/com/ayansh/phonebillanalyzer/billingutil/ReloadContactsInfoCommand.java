@@ -1,10 +1,10 @@
 package com.ayansh.phonebillanalyzer.billingutil;
 
+import com.ayansh.phonebillanalyzer.application.PBAApplication;
+
 import org.varunverma.CommandExecuter.Command;
 import org.varunverma.CommandExecuter.Invoker;
 import org.varunverma.CommandExecuter.ResultObject;
-
-import com.ayansh.phonebillanalyzer.application.PBAApplication;
 
 public class ReloadContactsInfoCommand extends Command {
 

@@ -1,10 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -19,6 +14,11 @@ import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class DisplayFile extends Activity {
 	

@@ -12,6 +12,8 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,7 +143,7 @@ public class PhoneBill {
 	
 	@SuppressWarnings("deprecation")
 	public void readPDFFile() throws Exception{
-		
+
 		HttpClient httpClient = new DefaultHttpClient();
 	    HttpPost httpPost = new HttpPost("http://apps.ayansh.com/Phone-Bill-Analyzer/parse_bill.php");
 	    
@@ -151,7 +153,6 @@ public class PhoneBill {
 	    InputStream is = PBAApplication.getInstance().getContext().getContentResolver().openInputStream(fileURI);
 	    InputStreamBody isb = new InputStreamBody(is, fileName);
 	    
-	    //builder.addTextBody("password", password);
 	    builder.addPart("type", new StringBody(billType));
 	    builder.addPart("password", new StringBody(password));
 	    builder.addPart("file", isb);
@@ -208,7 +209,7 @@ public class PhoneBill {
 			throw new Exception("Cannot read the PDF bill. Please report this error to the developer");
 			
 		}
-		
+
 	}
 	
 	public void saveToDB(){

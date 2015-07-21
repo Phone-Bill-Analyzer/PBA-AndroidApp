@@ -1,12 +1,5 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import java.util.Iterator;
-
-import org.varunverma.CommandExecuter.CommandExecuter;
-import org.varunverma.CommandExecuter.Invoker;
-import org.varunverma.CommandExecuter.ProgressInfo;
-import org.varunverma.CommandExecuter.ResultObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -32,6 +25,13 @@ import com.ayansh.phonebillanalyzer.application.ReadPDFFileCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
+
+import org.varunverma.CommandExecuter.CommandExecuter;
+import org.varunverma.CommandExecuter.Invoker;
+import org.varunverma.CommandExecuter.ProgressInfo;
+import org.varunverma.CommandExecuter.ResultObject;
+
+import java.util.Iterator;
 
 public class NewBill extends Activity implements OnClickListener, Invoker {
 	

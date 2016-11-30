@@ -55,7 +55,7 @@ public class BillListAdapter extends ArrayAdapter<PhoneBill> {
 		if(bill.getBillNo().contentEquals("DUMMY")){
 			
 			LinearLayout ll = (LinearLayout) rowView.findViewById(R.id.bldate);
-			ll.setBackgroundResource(R.drawable.new_bill);
+			ll.setBackgroundResource(R.mipmap.new_bill);
 			
 			billDate.setVisibility(View.GONE);
 			billMonth.setVisibility(View.GONE);

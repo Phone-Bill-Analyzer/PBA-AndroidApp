@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +23,8 @@ import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class AnaylzeBill extends Activity implements OnItemSelectedListener {
+public class AnaylzeBill extends AppCompatActivity implements OnItemSelectedListener {
 
 	private PhoneBill bill;
 	private WebView webView;
@@ -45,6 +48,10 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		setContentView(R.layout.bill_analysis);
 		
 		setTitle("Analyze Bill");
+
+		Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+		setSupportActionBar(myToolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 				
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
@@ -65,8 +72,6 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 			return;
 		}
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-		
 		analysisType = (Spinner) findViewById(R.id.analysis_type);
 		analysisType.setOnItemSelectedListener(this);
 		
@@ -80,7 +85,13 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
 		webView.addJavascriptInterface(new AppJavaScriptInterface(bill), "App");
 		
 		webView.setWebViewClient(new myWebViewClient());
-		
+
+		// Log Firebase Event
+		Bundle bundle = new Bundle();
+		bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "bill_analyze");
+		bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "bill_analyze");
+		PBAApplication.getInstance().getFirebaseAnalytics().logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
 	}
 
     @Override
@@ -97,21 +108,26 @@ public class AnaylzeBill extends Activity implements OnItemSelectedListener {
         }
 
     }
-	
+
 	@Override
-	protected void onStart(){
-		
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	protected void onDestroy(){
+
+		showInterstitialAd();
+		super.onDestroy();
 	}
-	
-	@Override
-	protected void onStop(){
-		
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+
+	private void showInterstitialAd(){
+
+		if (!Constants.isPremiumVersion()) {
+
+			InterstitialAd iad = MyInterstitialAd.getInterstitialAd(this);
+			if(iad.isLoaded()){
+				iad.show();
+			}
+		}
+
 	}
-	
+
 	private void showFromRawSource() {
 		
 		pd = ProgressDialog.show(this, "Loading...", "Please wait while we load the chart");

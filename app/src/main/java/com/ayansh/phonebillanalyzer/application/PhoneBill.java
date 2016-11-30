@@ -4,23 +4,23 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.net.Uri;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -141,75 +141,86 @@ public class PhoneBill {
 		return date[1];
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void readPDFFile() throws Exception{
 
-		HttpClient httpClient = new DefaultHttpClient();
-	    HttpPost httpPost = new HttpPost("http://apps.ayansh.com/Phone-Bill-Analyzer/parse_bill.php");
-	    
-	    MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-	    builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-	    
-	    InputStream is = PBAApplication.getInstance().getContext().getContentResolver().openInputStream(fileURI);
-	    InputStreamBody isb = new InputStreamBody(is, fileName);
-	    
-	    builder.addPart("type", new StringBody(billType));
-	    builder.addPart("password", new StringBody(password));
-	    builder.addPart("file", isb);
-	    
-	    httpPost.setEntity(builder.build());
-	    
-	    // Execute HTTP Request
-	    HttpResponse response = httpClient.execute(httpPost);
-	    
-	    InputStream ris = response.getEntity().getContent();
-		InputStreamReader isr = new InputStreamReader(ris);
-		BufferedReader reader = new BufferedReader(isr);
-		
+		String boundary = "*****" + Long.toString(System.currentTimeMillis()) + "*****";
+
+		String postURL = "http://apps.ayansh.com/Phone-Bill-Analyzer/parse_bill.php";
+		URL url = new URL(postURL);
+		HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+		urlConnection.setDoOutput(true);
+		urlConnection.setChunkedStreamingMode(0);
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setRequestProperty("Connection", "Keep-Alive");
+
+		urlConnection.setDoOutput(true);
+		urlConnection.setUseCaches(false);
+		urlConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+		builder.setBoundary(boundary);
+
+		InputStream is = PBAApplication.getInstance().getContext().getContentResolver().openInputStream(fileURI);
+		InputStreamBody isb = new InputStreamBody(is, fileName);
+
+		builder.addPart("type", new StringBody(billType));
+		builder.addPart("password", new StringBody(password));
+		builder.addPart("file", isb);
+
+		OutputStream os = urlConnection.getOutputStream();
+		HttpEntity multiPartEntity = builder.build();
+		multiPartEntity.writeTo(os);
+		os.close();
+		urlConnection.connect();
+
+		InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
 		StringBuilder sbuilder = new StringBuilder();
 		String line;
 		while ((line = reader.readLine()) != null) {
 			sbuilder.append(line);
 		}
-		
+
 		try{
-			
+
 			JSONObject result = new JSONObject(sbuilder.toString());
-			
+
 			int status = result.getInt("ErrorCode");
 			String message = result.getString("Message");
 			pages = result.getInt("PageCount");
 
 			JSONObject billDetails = result.getJSONObject("BillDetails");
-			
+
 			setPhoneNumber(billDetails.getString("PhoneNumber"));
 			setBillDate(billDetails.getString("BillDate"));
 			billNo = billDetails.getString("BillNo");
 			setFromDate(billDetails.getString("FromDate"));
 			setToDate(billDetails.getString("ToDate"));
 			setDueDate(billDetails.getString("DueDate"));
-			
+
 			JSONArray call_details = result.getJSONArray("CallDetails");
-			
+
 			CallDetailItem cd = null;
-			
+
 			for(int i=0; i<call_details.length(); i++){
-			
+
 				cd = new CallDetailItem(call_details.getJSONObject(i));
 				callDetails.add(cd);
 			}
-			
+
 			if(status > 0){
 				// Error
 				throw new Exception(message);
 			}
-			
-		} catch(JSONException e){
-			
-			throw new Exception("Cannot read the PDF bill. Please report this error to the developer");
-			
-		}
 
+		} catch(JSONException e){
+
+			throw new Exception("Cannot read the PDF bill. Please report this error to the developer");
+
+		}
 	}
 	
 	public void saveToDB(){

@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.ui.SettingsActivity;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +41,7 @@ public class PBAApplication {
 	
 	HashMap<String, String> Options;
 	private ArrayList<PhoneBill> phoneBillList;
+	private FirebaseAnalytics mFirebaseAnalytics;
 	
 	public static PBAApplication getInstance(){
 		
@@ -66,16 +67,20 @@ public class PBAApplication {
 			appDB = PBAApplicationDB.getInstance(context);
 			appDB.openDBForWriting();
 			appDB.loadOptions();
+
+			mFirebaseAnalytics = FirebaseAnalytics.getInstance(c);
 			
-			// Initialize Google Analytics
-			GoogleAnalytics.getInstance(context).newTracker(R.xml.global_tracker);
 		}
 	}
 	
 	public Context getContext() {
 		return context;
 	}
-	
+
+	public FirebaseAnalytics getFirebaseAnalytics(){
+		return mFirebaseAnalytics;
+	}
+
 	// Get all Options
 	public HashMap<String, String> getOptions() {
 		return Options;

@@ -1,10 +1,11 @@
 package com.ayansh.phonebillanalyzer.ui;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,24 +15,23 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.ayansh.CommandExecuter.CommandExecuter;
+import com.ayansh.CommandExecuter.Invoker;
+import com.ayansh.CommandExecuter.ProgressInfo;
+import com.ayansh.CommandExecuter.ResultObject;
 import com.ayansh.phonebillanalyzer.R;
 import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
 import com.ayansh.phonebillanalyzer.application.PhoneBill;
-import com.ayansh.phonebillanalyzer.billingutil.ReloadContactsInfoCommand;
+import com.ayansh.phonebillanalyzer.application.ReloadContactsInfoCommand;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.GoogleAnalytics;
 
-import org.varunverma.CommandExecuter.CommandExecuter;
-import org.varunverma.CommandExecuter.Invoker;
-import org.varunverma.CommandExecuter.ProgressInfo;
-import org.varunverma.CommandExecuter.ResultObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main extends Activity implements OnItemClickListener, Invoker {
+public class Main extends AppCompatActivity implements OnItemClickListener, Invoker {
 	
 	private ListView listView;
 	private BillListAdapter adapter;
@@ -46,9 +46,12 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		setContentView(R.layout.main);
 		
 		setTitle("Bill List");
-		
+
 		PBAApplication.getInstance().setContext(getApplicationContext());
-		
+
+		Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+		setSupportActionBar(myToolbar);
+
 		// Show Ads
 		if (!Constants.isPremiumVersion()) {
 
@@ -81,20 +84,6 @@ public class Main extends Activity implements OnItemClickListener, Invoker {
 		
 		listView.setOnItemClickListener(this);
 		
-	}
-	
-	@Override
-	protected void onStart(){
-		
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-	
-	@Override
-	protected void onStop(){
-		
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 
 	@Override

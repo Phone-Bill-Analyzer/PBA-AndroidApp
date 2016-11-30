@@ -9,7 +9,7 @@
         android:layout_height="50sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/empty_calendar"
+        android:background="@mipmap/empty_calendar"
         android:orientation="vertical" >
 
         <TextView

@@ -21,6 +21,7 @@
     <string name="web_analyze">Analyze on Web</string>
     <string name="session_id">Session ID</string>
     <string name="web_sync">Sync</string>
+    <string name="compare_bills">Compare Bills</string>
 	
 	<string-array name="bill_types">
         <item>APPM : Airtel Post Paid Mobile</item>

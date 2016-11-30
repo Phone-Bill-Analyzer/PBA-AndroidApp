@@ -5,32 +5,39 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.ayansh.phonebillanalyzer.R;
+import com.ayansh.phonebillanalyzer.application.Constants;
 import com.ayansh.phonebillanalyzer.application.PBAApplication;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class DisplayFile extends Activity {
+public class DisplayFile extends AppCompatActivity {
 	
 	private String html_text;
 	private WebView my_web_view;
-	private AdView adView;
+	private boolean show_ad;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);       
         setContentView(R.layout.file_display);
+
+		Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+		setSupportActionBar(myToolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
      
         my_web_view = (WebView) findViewById(R.id.webview);
                 
@@ -46,7 +53,18 @@ public class DisplayFile extends Activity {
        	if(fileName != null){
        		// If File name was provided, show from file name.
        		getHTMLFromFile(fileName);
-       	}
+
+			if(fileName.contains("about")){
+				show_ad = true;
+			}
+
+			// Log Firebase Event
+			Bundle bundle = new Bundle();
+			bundle.putString(FirebaseAnalytics.Param.ITEM_ID, fileName);
+			bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "display_file");
+			PBAApplication.getInstance().getFirebaseAnalytics().logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+		}
        	else{
        		// Else, show data directly.
        		String subject = getIntent().getStringExtra("Subject");
@@ -57,8 +75,6 @@ public class DisplayFile extends Activity {
        				"</body></html>";
        	}
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-       	
        	showFromRawSource();
        	
 	}
@@ -77,25 +93,12 @@ public class DisplayFile extends Activity {
         }
 
     }
-	
-	@Override
-	protected void onStart(){
-		
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-	
-	@Override
-	protected void onStop(){
-		
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
+
 	
 	@Override
 	protected void onDestroy(){
-		if (adView != null) {
-			adView.destroy();
+		if(show_ad){
+			showInterstitialAd();
 		}
 		super.onDestroy();
 	}
@@ -108,6 +111,18 @@ public class DisplayFile extends Activity {
 	    }
 
 	    return super.onKeyDown(keyCode, event);
+	}
+
+	private void showInterstitialAd(){
+
+		if (!Constants.isPremiumVersion()) {
+
+			InterstitialAd iad = MyInterstitialAd.getInterstitialAd(this);
+			if(iad.isLoaded()){
+				iad.show();
+			}
+		}
+
 	}
 	
 	@Override
